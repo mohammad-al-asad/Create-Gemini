@@ -1,4 +1,4 @@
-export default function ProgressSteps({ currentStep }) {
+export default function ProgressSteps({ currentStep }: { currentStep: number }) {
   const steps = ['Personal', 'Address', 'Security', 'Complete']
   
   return (
