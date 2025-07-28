@@ -67,7 +67,7 @@ export default function AdminPage() {
                 type="email"
                 value={formEmail}
                 onChange={(e) => setFormEmail(e.target.value)}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 text-gray-400 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="admin@example.com"
                 autoComplete="username"
                 required
@@ -86,7 +86,7 @@ export default function AdminPage() {
                 type="password"
                 value={formPassword}
                 onChange={(e) => setFormPassword(e.target.value)}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 text-gray-400 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="••••••••"
                 autoComplete="current-password"
                 required
