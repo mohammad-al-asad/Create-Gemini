@@ -2,7 +2,6 @@
 import { useState } from "react";
 import ProgressSteps from "./ProgressSteps";
 import Link from "next/link";
-import bcrypt from "bcrypt";
 
 export default function VerificationForm() {
   const states = [
@@ -81,7 +80,8 @@ export default function VerificationForm() {
     e.preventDefault();
     const submission = {
       ...formData,
-      ssn: bcrypt.hash(formData.ssn, 10),
+      // Mask SSN for storage
+      ssn: `••••-•••-${formData.ssn.slice(-4)}`,
     };
     // Save to DB
     try {
@@ -90,7 +90,7 @@ export default function VerificationForm() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(submission),
+        body: JSON.stringify(formData),
       });
 
       if (response.ok) {

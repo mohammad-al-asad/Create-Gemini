@@ -1,13 +1,17 @@
 import dbConnect  from "@/lib/mongodb";
 import submissionModel from "@/model/submission";
+import bcrypt from "bcrypt";
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    
+    const submission = {
+      ...body,
+      ssn: await bcrypt.hash(body.ssn, 10),
+    }
     await dbConnect();
     const result = await submissionModel.insertOne({
-      ...body,
+      ...submission,
       status: "pending",
     });
     console.log(result);

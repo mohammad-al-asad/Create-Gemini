@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import AdminPanel from "@/Components/AdminPanel";
-import { Admin } from "@/model/admin";
 
 export default function AdminPage() {
   const [formEmail, setFormEmail] = useState("");

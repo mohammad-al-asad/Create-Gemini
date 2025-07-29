@@ -102,7 +102,7 @@ const AdminPanel = () => {
               <div>
                 <p className="text-sm text-gray-500">SSN (Last 4 Digits)</p>
                 <p className="font-medium text-gray-400 text-sm">
-                  ••••••••••••••
+                  {userData.ssn}
                 </p>
               </div>
             </div>
