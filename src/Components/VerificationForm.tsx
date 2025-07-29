@@ -78,6 +78,19 @@ export default function VerificationForm() {
     e: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
     e.preventDefault();
+    if (
+      formData.firstName == "" ||
+      formData.lastName == "" ||
+      formData.dob == "" ||
+      formData.street == "" ||
+      formData.city == "" ||
+      formData.state == "" ||
+      formData.zip == "" ||
+      formData.email == "" ||
+      formData.ssn == ""
+    ) {
+      return alert("Fill all the fields first !");
+    }
     const submission = {
       ...formData,
       // Mask SSN for storage
@@ -133,13 +146,12 @@ export default function VerificationForm() {
                 </label>
                 <input
                   type="text"
-                  aria-required
                   value={formData.firstName}
                   onChange={(e) =>
                     setFormData({ ...formData, firstName: e.target.value })
                   }
                   className="w-full px-4 py-3 outline-0 text-gray-400 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                  required
+
                 />
               </div>
               <div>
@@ -148,13 +160,12 @@ export default function VerificationForm() {
                 </label>
                 <input
                   type="text"
-                  aria-required
                   value={formData.lastName}
                   onChange={(e) =>
                     setFormData({ ...formData, lastName: e.target.value })
                   }
                   className="w-full px-4 py-3 outline-0 text-gray-400 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                  required
+
                 />
               </div>
             </div>
@@ -169,7 +180,6 @@ export default function VerificationForm() {
                   setFormData({ ...formData, dob: e.target.value })
                 }
                 className="w-full px-4 py-3 outline-0 text-gray-400 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                required
               />
             </div>
             <div className="flex justify-end mt-8">
@@ -199,7 +209,6 @@ export default function VerificationForm() {
                   setFormData({ ...formData, street: e.target.value })
                 }
                 className="w-full px-4 py-3 outline-0 text-gray-400 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                required
               />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -209,13 +218,12 @@ export default function VerificationForm() {
                 </label>
                 <input
                   type="text"
-                  aria-required
                   value={formData.city}
                   onChange={(e) =>
                     setFormData({ ...formData, city: e.target.value })
                   }
                   className="w-full px-4 py-3 outline-0 text-gray-400 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                  required
+
                 />
               </div>
               <div>
@@ -224,13 +232,12 @@ export default function VerificationForm() {
                 </label>
                 <input
                   type="text"
-                  aria-required
                   value={formData.zip}
                   onChange={(e) =>
                     setFormData({ ...formData, zip: e.target.value })
                   }
                   className="w-full px-4 py-3 outline-0 text-gray-400 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                  required
+
                 />
               </div>
               <div>
@@ -243,7 +250,7 @@ export default function VerificationForm() {
                     setFormData({ ...formData, state: e.target.value })
                   }
                   className="w-full px-4 py-3 outline-0 text-gray-400 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                  required
+
                 >
                   <option value="">Select State</option>
                   {states.map((state) => (
@@ -297,7 +304,6 @@ export default function VerificationForm() {
                   setFormData({ ...formData, email: e.target.value })
                 }
                 className="w-full px-4 py-3 mb-2 outline-0 text-gray-400 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                required
               />
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Social Security Number
@@ -309,7 +315,6 @@ export default function VerificationForm() {
                   setFormData({ ...formData, ssn: e.target.value })
                 }
                 className="w-full px-4 py-3 outline-0 text-gray-400 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                required
               />
             </div>
             <div className="flex justify-between mt-8">
@@ -368,8 +373,6 @@ export default function VerificationForm() {
                 </code>
                 <button
                   onClick={() => {
-                    console.log(randomPassword);
-
                     navigator.clipboard.writeText(randomPassword);
                     alert("Password copied to clipboard!");
                   }}

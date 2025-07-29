@@ -14,7 +14,6 @@ export async function POST(request: Request) {
       ...submission,
       status: "pending",
     });
-    console.log(result);
     
     return new Response(
       JSON.stringify({ success: true, id: "result.insertedId" }),

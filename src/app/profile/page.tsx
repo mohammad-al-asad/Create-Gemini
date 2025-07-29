@@ -22,8 +22,6 @@ export default function AdminPage() {
     // Check credentials
     const email = localStorage.getItem("email");
     const password = localStorage.getItem("password");
-    console.log(email, password);
-    console.log(formEmail, formPassword);
     
     if (email && password) {
       if (email === formEmail && password === formPassword) {
