@@ -57,7 +57,6 @@ export default function VerificationForm() {
     { code: "WY", name: "Wyoming" },
   ];
 
-  const [randomPassword, setRandomPassword] = useState("");
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     firstName: "",
@@ -91,11 +90,6 @@ export default function VerificationForm() {
     ) {
       return alert("Fill all the fields first !");
     }
-    const submission = {
-      ...formData,
-      // Mask SSN for storage
-      ssn: `••••-•••-${formData.ssn.slice(-4)}`,
-    };
     // Save to DB
     try {
       const response = await fetch("/api/submit-verification", {
@@ -107,20 +101,6 @@ export default function VerificationForm() {
       });
 
       if (response.ok) {
-        // Save to localStorage
-        localStorage.setItem(
-          "verificationSubmission",
-          JSON.stringify(submission)
-        );
-
-        // Move to confirmation step
-        const randomPassword1 = ` G3m1n!-${Math.random()
-          .toString(36)
-          .slice(2, 10)}`;
-        localStorage.setItem("email", formData.email);
-        localStorage.setItem("password", randomPassword1);
-        setRandomPassword(randomPassword1);
-
         setStep(4);
       } else {
         throw new Error("Submission failed");
@@ -363,42 +343,6 @@ export default function VerificationForm() {
               </p>
             </div>
 
-            <div className="bg-blue-50 rounded-lg p-6 space-y-4">
-              <h3 className="font-medium text-gray-900">
-                Your Temporary Password
-              </h3>
-              <div className="flex items-center justify-between bg-white p-3 rounded-md border border-gray-200">
-                <code className="font-mono text-gray-800">
-                  {randomPassword}
-                </code>
-                <button
-                  onClick={() => {
-                    navigator.clipboard.writeText(randomPassword);
-                    alert("Password copied to clipboard!");
-                  }}
-                  className="text-blue-600 hover:text-blue-800 flex items-center"
-                >
-                  <svg
-                    className="w-5 h-5 mr-1"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
-                    />
-                  </svg>
-                  Copy
-                </button>
-              </div>
-              <p className="text-sm text-gray-600">
-                Use this password for accessing your submission.
-              </p>
-            </div>
-
             <div className="bg-purple-50 rounded-lg p-6 text-center">
               <p className="text-purple-800 font-medium">
                 Once your identity is verified, you will receive the{" "}
@@ -408,34 +352,6 @@ export default function VerificationForm() {
                 !
               </p>
             </div>
-
-            {/* Admin page navigate btn */}
-            <Link
-              href="/profile"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg text-center transition-colors flex items-center justify-center gap-2"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-              </svg>
-              View your Submission
-            </Link>
           </div>
         );
       default:
