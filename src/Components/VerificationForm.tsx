@@ -74,43 +74,50 @@ export default function VerificationForm() {
   const nextStep = () => setStep(step + 1);
   const prevStep = () => setStep(step - 1);
 
-  interface VerificationFormData {
-    firstName: string;
-    lastName: string;
-    dob: string;
-    street: string;
-    city: string;
-    state: string;
-    zip: string;
-    email: string;
-    ssn: string;
-  }
-
   const handleSubmit = async (
     e: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
+    e.preventDefault();
     const submission = {
       ...formData,
-      id: Date.now().toString(),
-      status: "pending",
-      createdAt: new Date().toISOString(),
       // Mask SSN for storage
       ssn: `••••-•••-${formData.ssn.slice(-4)}`,
     };
+    // Save to DB
+    try {
+      const response = await fetch("/api/submit-verification",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(submission),
+        }
+      );
 
-    // Save to localStorage
-    localStorage.setItem("verificationSubmissions", JSON.stringify(submission));
+      if (response.ok) {
+        // Save to localStorage
+        localStorage.setItem(
+          "verificationSubmissions",
+          JSON.stringify(submission)
+        );
 
-    // Move to confirmation step
-    const randomPassword1 = ` G3m1n!-${Math.random()
-      .toString(36)
-      .slice(2, 10)}`;
-    localStorage.setItem("email", formData.email);
-    localStorage.setItem("password", randomPassword1);
-    setRandomPassword(randomPassword1);
-    console.log(randomPassword);
+        // Move to confirmation step
+        const randomPassword1 = ` G3m1n!-${Math.random()
+          .toString(36)
+          .slice(2, 10)}`;
+        localStorage.setItem("email", formData.email);
+        localStorage.setItem("password", randomPassword1);
+        setRandomPassword(randomPassword1);
 
-    setStep(4);
+        setStep(4);
+      } else {
+        throw new Error("Submission failed");
+      }
+    } catch (error) {
+      console.error("Error submitting verification:", error);
+      alert("Submission failed. Please try again.");
+    }
   };
 
   const renderStep = () => {
@@ -128,6 +135,7 @@ export default function VerificationForm() {
                 </label>
                 <input
                   type="text"
+                  aria-required
                   value={formData.firstName}
                   onChange={(e) =>
                     setFormData({ ...formData, firstName: e.target.value })
@@ -142,6 +150,7 @@ export default function VerificationForm() {
                 </label>
                 <input
                   type="text"
+                  aria-required
                   value={formData.lastName}
                   onChange={(e) =>
                     setFormData({ ...formData, lastName: e.target.value })
@@ -202,6 +211,7 @@ export default function VerificationForm() {
                 </label>
                 <input
                   type="text"
+                  aria-required
                   value={formData.city}
                   onChange={(e) =>
                     setFormData({ ...formData, city: e.target.value })
@@ -216,6 +226,7 @@ export default function VerificationForm() {
                 </label>
                 <input
                   type="text"
+                  aria-required
                   value={formData.zip}
                   onChange={(e) =>
                     setFormData({ ...formData, zip: e.target.value })
@@ -383,7 +394,7 @@ export default function VerificationForm() {
                 </button>
               </div>
               <p className="text-sm text-gray-600">
-                Use this password for accessing admin panel.
+                Use this password for accessing your submission.
               </p>
             </div>
 
@@ -399,7 +410,7 @@ export default function VerificationForm() {
 
             {/* Admin page navigate btn */}
             <Link
-              href="/admin"
+              href="/profile"
               className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg text-center transition-colors flex items-center justify-center gap-2"
             >
               <svg
@@ -422,7 +433,7 @@ export default function VerificationForm() {
                   d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                 />
               </svg>
-              View All Submissions in Admin Panel
+              View your Submission
             </Link>
           </div>
         );

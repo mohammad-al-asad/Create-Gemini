@@ -1,120 +1,83 @@
-import { useEffect, useState } from "react";
+"use client"
+import { useEffect, useState } from 'react';
 
-const AdminPanel = () => {
-  const [userData, setUserData] = useState(null);
+export default function AdminPanel() {
+  const [verifications, setVerifications] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Load the most recent submission
-    const savedData = localStorage.getItem("verificationSubmissions");
-    const parseData = JSON.parse(savedData)
-    
-    if (parseData) {
-      setUserData(parseData); 
-    }
-    setLoading(false);
+    const fetchData = async () => {
+      try {
+        const response = await fetch('/api/verifications');
+        const data = await response.json();
+        setVerifications(data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
   }, []);
 
   return (
-    <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6 m-4">
-      {/* Header */}
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Gemini</h1>
-        <p className="text-gray-600">Submission Details</p>
-        <div className="border-t border-gray-200 my-4"></div>
+    <div className="min-h-screen bg-gray-100 p-6">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-2xl font-bold text-gray-800 mb-6">Verification Submissions</h1>
+        
+        {loading ? (
+          <div className="flex justify-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+          </div>
+        ) : (
+          <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">DOB</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Address</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Submitted At</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {verifications.map((submission) => (
+                  <tr key={submission._id}>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-gray-900">
+                        {submission.firstName} {submission.lastName}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-500">{submission.dob}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-500">
+                        {submission.street}, {submission.city}, {submission.state} {submission.zip}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-500">
+                        {new Date(submission.createdAt).toLocaleString()}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                        submission.status === 'verified' 
+                          ? 'bg-green-100 text-green-800' 
+                          : 'bg-yellow-100 text-yellow-800'
+                      }`}>
+                        {submission.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
-
-      {loading ? (
-        <div className="text-center py-8">Loading...</div>
-      ) : userData ? (
-        <div className="space-y-6">
-          <div className="bg-gray-200 p-4 rounded-lg">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">
-              Personal Information
-            </h2>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-sm text-gray-500">First Name</p>
-                <p className="font-medium text-gray-400 text-sm">
-                  {userData.firstName}
-                </p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Last Name</p>
-                <p className="font-medium text-gray-400 text-sm">
-                  {userData.lastName}
-                </p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Date of Birth</p>
-                <p className="font-medium text-gray-400 text-sm">
-                  {userData.dob}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-gray-200 p-4 rounded-lg">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">
-              Address
-            </h2>
-            <div className="space-y-3">
-              <div>
-                <p className="text-sm text-gray-500">Street</p>
-                <p className="font-medium text-gray-400 text-sm">
-                  {userData.street}
-                </p>
-              </div>
-              <div className="grid grid-cols-3 gap-4">
-                <div>
-                  <p className="text-sm text-gray-500">City</p>
-                  <p className="font-medium text-gray-400 text-sm">
-                    {userData.city}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">State</p>
-                  <p className="font-medium text-gray-400 text-sm">
-                    {userData.state}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">ZIP</p>
-                  <p className="font-medium text-gray-400 text-sm">
-                    {userData.zip}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-gray-200 p-4 rounded-lg">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">
-              Security
-            </h2>
-            <div className="grid grid-rows-2 gap-4">
-              <div>
-                <p className="text-sm text-gray-500">Email</p>
-                <p className="font-medium text-gray-400 text-sm">
-                  {userData.email}
-                </p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">SSN (Last 4 Digits)</p>
-                <p className="font-medium text-gray-400 text-sm">
-                  ••••••••{userData.ssn?.slice(-4)}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className="text-center py-8 text-gray-500">
-          No submission data found
-        </div>
-      )}
     </div>
   );
-};
-
-export default AdminPanel;
+}

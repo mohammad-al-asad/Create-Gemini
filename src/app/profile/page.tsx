@@ -1,13 +1,13 @@
 "use client";
 import { useState } from "react";
-import AdminPanel from "@/Components/AdminPanel";
-import { Admin } from "@/model/admin";
+import ProfilePanel from "@/Components/ProfilePanel";
 
 export default function AdminPage() {
   const [formEmail, setFormEmail] = useState("");
   const [formPassword, setFormPassword] = useState("");
   const [error, setError] = useState("");
   const [authenticated, setAuthenticated] = useState(false);
+
 
   const handleLogin = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
@@ -20,14 +20,14 @@ export default function AdminPage() {
     }
 
     // Check credentials
-    const res = await fetch("/api/verify-admin", {
-      method: "GET",
-    });
-    const { email, password } = await res.json();
-
+    const email = localStorage.getItem("email");
+    const password = localStorage.getItem("password");
+    console.log(email, password);
+    console.log(formEmail, formPassword);
+    
     if (email && password) {
       if (email === formEmail && password === formPassword) {
-    setAuthenticated(true);
+        setAuthenticated(true);
       } else {
         setError("Invalid email or password");
       }
@@ -41,7 +41,7 @@ export default function AdminPage() {
       <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
         <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-gray-800">Admin Login</h2>
+            <h2 className="text-2xl font-bold text-gray-800">Profile Login</h2>
             <p className="text-gray-600 mt-2">
               Enter your credentials to access the dashboard
             </p>
@@ -92,6 +92,30 @@ export default function AdminPage() {
               />
             </div>
 
+            {/* <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <input
+                  id="remember-me"
+                  name="remember-me"
+                  type="checkbox"
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <label
+                  htmlFor="remember-me"
+                  className="ml-2 block text-sm text-gray-700"
+                >
+                  Remember me
+                </label>
+              </div>
+
+              <div className="text-sm">
+                <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
+                  Forgot password?
+                </a>
+              </div>
+              
+            </div> */}
+
             <div>
               <button
                 type="submit"
@@ -106,5 +130,5 @@ export default function AdminPage() {
     );
   }
 
-  return <AdminPanel />;
+  return <ProfilePanel />;
 }
