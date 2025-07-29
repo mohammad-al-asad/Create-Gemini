@@ -5,8 +5,8 @@ const AdminPanel = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Load the most recent submission
-    const savedData = localStorage.getItem("verificationSubmissions");
+    // Load the submission
+    const savedData = localStorage.getItem("verificationSubmission");
     const parseData = JSON.parse(savedData)
     
     if (parseData) {
@@ -102,7 +102,7 @@ const AdminPanel = () => {
               <div>
                 <p className="text-sm text-gray-500">SSN (Last 4 Digits)</p>
                 <p className="font-medium text-gray-400 text-sm">
-                  ••••••••{userData.ssn?.slice(-4)}
+                  ••••••••••••••
                 </p>
               </div>
             </div>

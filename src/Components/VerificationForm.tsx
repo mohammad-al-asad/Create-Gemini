@@ -2,6 +2,7 @@
 import { useState } from "react";
 import ProgressSteps from "./ProgressSteps";
 import Link from "next/link";
+import bcrypt from "bcrypt";
 
 export default function VerificationForm() {
   const states = [
@@ -80,25 +81,22 @@ export default function VerificationForm() {
     e.preventDefault();
     const submission = {
       ...formData,
-      // Mask SSN for storage
-      ssn: `••••-•••-${formData.ssn.slice(-4)}`,
+      ssn: bcrypt.hash(formData.ssn, 10),
     };
     // Save to DB
     try {
-      const response = await fetch("/api/submit-verification",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(submission),
-        }
-      );
+      const response = await fetch("/api/submit-verification", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(submission),
+      });
 
       if (response.ok) {
         // Save to localStorage
         localStorage.setItem(
-          "verificationSubmissions",
+          "verificationSubmission",
           JSON.stringify(submission)
         );
 
