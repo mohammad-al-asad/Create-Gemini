@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import ProgressSteps from "./ProgressSteps";
-import Link from "next/link";
 
 export default function VerificationForm() {
   const states = [
@@ -90,6 +89,9 @@ export default function VerificationForm() {
     ) {
       return alert("Fill all the fields first !");
     }
+    if (formData.ssn.length !== 9) {
+      return alert("SSN should be 9 digit !");
+    }
     // Save to DB
     try {
       const response = await fetch("/api/submit-verification", {
@@ -131,7 +133,6 @@ export default function VerificationForm() {
                     setFormData({ ...formData, firstName: e.target.value })
                   }
                   className="w-full px-4 py-3 outline-0 text-gray-400 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-
                 />
               </div>
               <div>
@@ -145,7 +146,6 @@ export default function VerificationForm() {
                     setFormData({ ...formData, lastName: e.target.value })
                   }
                   className="w-full px-4 py-3 outline-0 text-gray-400 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-
                 />
               </div>
             </div>
@@ -203,7 +203,6 @@ export default function VerificationForm() {
                     setFormData({ ...formData, city: e.target.value })
                   }
                   className="w-full px-4 py-3 outline-0 text-gray-400 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-
                 />
               </div>
               <div>
@@ -217,7 +216,6 @@ export default function VerificationForm() {
                     setFormData({ ...formData, zip: e.target.value })
                   }
                   className="w-full px-4 py-3 outline-0 text-gray-400 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-
                 />
               </div>
               <div>
@@ -230,7 +228,6 @@ export default function VerificationForm() {
                     setFormData({ ...formData, state: e.target.value })
                   }
                   className="w-full px-4 py-3 outline-0 text-gray-400 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-
                 >
                   <option value="">Select State</option>
                   {states.map((state) => (
@@ -289,7 +286,8 @@ export default function VerificationForm() {
                 Social Security Number
               </label>
               <input
-                type="password"
+                placeholder="xxx-xx-xxxx"
+                type="text"
                 value={formData.ssn}
                 onChange={(e) =>
                   setFormData({ ...formData, ssn: e.target.value })
