@@ -345,7 +345,7 @@ export default function VerificationForm() {
               <p className="text-purple-800 font-medium">
                 Once your identity is verified, you will receive the{" "}
                 <span className="font-bold">
-                  $25 Tremendous PayPal reward link
+                  $20 Tremendous PayPal reward link
                 </span>
                 !
               </p>
