@@ -60,9 +60,7 @@ const submissionSchema: Schema<Submission> = new Schema({
   },
   email: {
     type: String,
-    unique: true,
     required: true,
-    match: [/.+\@.+\..+/, "Please use a valid email address"],
   },
   createdAt: {
     type: Date,
