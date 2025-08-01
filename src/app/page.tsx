@@ -25,7 +25,7 @@ export default function Home() {
               Identity Verification
             </h1>
             <p className="text-gray-500 mt-2">
-              Complete verification to claim your $25 reward
+              Complete verification to claim your $20 reward
             </p>
           </div>
 
